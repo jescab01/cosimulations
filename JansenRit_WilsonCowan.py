@@ -530,8 +530,8 @@ class JansenRit_WilsonCowan(ModelNumbaDfun):
         E = state_variables[6, :]
         I = state_variables[7, :]
 
-        lrc_fromJR = coupling[0, :] * self.jrMask_wc[numpy.newaxis].T
-        lrc_fromWC = coupling[2, :] * (1-self.jrMask_wc)[numpy.newaxis].T
+        lrc_2jr = coupling[0, :] * self.jrMask_wc[numpy.newaxis].T
+        lrc_2wc = coupling[0, :] * (1-self.jrMask_wc)[numpy.newaxis].T
 
         ## JANSEN-RIT
         src = local_coupling * (vExc - vInh)
@@ -543,7 +543,7 @@ class JansenRit_WilsonCowan(ModelNumbaDfun):
         dvPyr = xPyr
         dxPyr = self.He / self.tau_e * S_pyr - (2 * xPyr) / self.tau_e - (vPyr / self.tau_e**2)
         dvExc = xExc
-        dxExc = self.He / self.tau_e * (S_exc + src + lrc_fromJR + lrc_fromWC + self.p) - (2 * xExc) / self.tau_e - (vExc / self.tau_e**2)
+        dxExc = self.He / self.tau_e * (S_exc + src + lrc_2jr + self.p) - (2 * xExc) / self.tau_e - (vExc / self.tau_e**2)
         dvInh = xInh
         dxInh = self.Hi / self.tau_i * S_inh - (2 * xInh) / self.tau_i - (vInh / self.tau_i**2)
 
@@ -552,7 +552,7 @@ class JansenRit_WilsonCowan(ModelNumbaDfun):
         src_e = local_coupling * E
         src_i = local_coupling * I
 
-        x_e = self.alpha_e * (self.c_ee * E - self.c_ei * I + self.P - self.theta_e + lrc_fromJR + lrc_fromWC + src_e + src_i)
+        x_e = self.alpha_e * (self.c_ee * E - self.c_ei * I + self.P - self.theta_e + lrc_2wc + src_e + src_i)
         x_i = self.alpha_i * (self.c_ie * E - self.c_ii * I + self.Q - self.theta_i + src_e + src_i)
 
         s_e = self.c_e / (1.0 + numpy.exp(-self.a_e * (x_e - self.b_e)))
